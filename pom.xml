@@ -7,11 +7,8 @@
     <groupId>io.github.mkpaz</groupId>
     <artifactId>atlantafx-parent</artifactId>
     <packaging>pom</packaging>
-<<<<<<< HEAD
-    <version>1.1.1</version>
-=======
+
     <version>1.2.0</version>
->>>>>>> 7ebfa7ac0e943163eea3b235e8017658952f6829
 
     <name>AtlantaFX</name>
     <description>JavaFX CSS theme collection plus additional controls</description>

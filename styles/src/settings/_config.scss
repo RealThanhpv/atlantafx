@@ -52,13 +52,13 @@ $checkbox-mark-padding-x: vars.$checkbox-mark-padding-x !default;
 $checkbox-label-padding:  vars.$checkbox-label-padding !default;
 
 // menu
-<<<<<<< HEAD
+
 $popup-padding-x:     vars.$popup-padding-x !default;
 $popup-padding-y:     vars.$popup-padding-y !default;
-=======
+
 $popup-padding-x:     5px !default;
 $popup-padding-y:     5px !default;
->>>>>>> 7ebfa7ac0e943163eea3b235e8017658952f6829
+
 $popup-shadow-radius: if($darkMode, 8px, 6px) !default;
 $popup-shadow-spread: if($darkMode, 0.6, 0.3) !default;
 $popup-radius:        5px !default;
