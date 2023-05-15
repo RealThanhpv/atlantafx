@@ -6,7 +6,11 @@
     <parent>
         <groupId>io.github.mkpaz</groupId>
         <artifactId>atlantafx-parent</artifactId>
+<<<<<<< HEAD
         <version>1.1.1</version>
+=======
+        <version>1.2.0</version>
+>>>>>>> 7ebfa7ac0e943163eea3b235e8017658952f6829
     </parent>
     <artifactId>atlantafx-styles</artifactId>
 
@@ -35,6 +39,9 @@
                         <arg>${scss.inputDir}/primer-dark.scss:${css.outputDir}/primer-dark.css</arg>
                         <arg>${scss.inputDir}/nord-light.scss:${css.outputDir}/nord-light.css</arg>
                         <arg>${scss.inputDir}/nord-dark.scss:${css.outputDir}/nord-dark.css</arg>
+                        <arg>${scss.inputDir}/cupertino-light.scss:${css.outputDir}/cupertino-light.css</arg>
+                        <arg>${scss.inputDir}/cupertino-dark.scss:${css.outputDir}/cupertino-dark.css</arg>
+                        <arg>${scss.inputDir}/dracula.scss:${css.outputDir}/dracula.css</arg>
                         <arg>--no-source-map</arg>
                     </args>
                 </configuration>
@@ -53,21 +60,36 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <attach>false</attach>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <tarLongFileMode>posix</tarLongFileMode>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>assembly</id>
-                        <phase>install</phase>
+                        <id>assemble-themes</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
                             <finalName>${app.name}-${app.version}-themes</finalName>
-                            <attach>false</attach>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <tarLongFileMode>posix</tarLongFileMode>
                             <descriptors>
                                 <descriptor>assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>assemble-scenebuilder</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${app.name}-${app.version}-scenebuilder</finalName>
+                            <descriptors>
+                                <descriptor>scenebuilder.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>

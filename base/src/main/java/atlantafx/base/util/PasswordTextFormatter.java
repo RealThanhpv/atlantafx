@@ -1,6 +1,8 @@
 /* SPDX-License-Identifier: MIT */
+
 package atlantafx.base.util;
 
+import java.util.function.UnaryOperator;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -10,75 +12,104 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
-import java.util.Objects;
-import java.util.function.UnaryOperator;
-
 /**
  * An alternative for the {@link javafx.scene.control.PasswordField}.
  * The formatter (un)masks text field content based on boolean property.
  */
 public class PasswordTextFormatter extends TextFormatter<String> {
 
-    public static final char BULLET = '\u2731'; // heavy asterisk
+    public static final char BULLET = '✱'; // U+2731, heavy asterisk
 
     protected PasswordTextFormatter(StringConverter<String> valueConverter,
                                     UnaryOperator<Change> filter,
-                                    TextField textField,
+                                    TextField field,
                                     char bullet) {
         super(valueConverter, null, filter);
 
-        if (valueConverter == null)
+        if (valueConverter == null) {
             throw new NullPointerException("StringConverter cannot be null!");
-        if (filter == null)
+        }
+        if (filter == null) {
             throw new NullPointerException("UnaryOperator cannot be null!");
-        if (textField == null)
+        }
+        if (field == null) {
             throw new NullPointerException("TextField cannot be null!");
+        }
 
         PasswordFilter passwordFilter = (PasswordFilter) getFilter();
         passwordFilter.setBullet(bullet);
-        passwordFilter.setInitialText(textField.getText());
+        passwordFilter.setInitialText(field.getText());
 
         revealPasswordProperty().addListener((obs, old, val) -> {
-            // Force text field update, because converter is only called on focus
-            // events by default. Don't use commitValue() here because caret position
-            // won't be correct due to #javafx-bug (https://bugs.openjdk.org/browse/JDK-8248914).
             if (val == null) {
                 return;
             }
-            textField.setText(passwordProperty().get());
+
+            // Force text field update, because converter is only called on focus events by default.
+            // Also, reset caret first, because otherwise its position won't be correct due to
+            // #javafx-bug (https://bugs.openjdk.org/browse/JDK-8248914).
+            field.positionCaret(0);
+            field.commitValue();
         });
 
         // force text field update on scene show
-        Platform.runLater(textField::commitValue);
+        Platform.runLater(field::commitValue);
     }
 
+    /**
+     * Always returns the unmasked password text regardless of
+     * the {@link #revealPasswordProperty} state.
+     */
     public ReadOnlyStringProperty passwordProperty() {
         return ((PasswordFilter) getFilter()).password.getReadOnlyProperty();
     }
 
+    /**
+     * See {@link #passwordProperty()}.
+     */
     public String getPassword() {
         return passwordProperty().get();
     }
 
+    /**
+     * Specifies whether the unmasked password text is revealed or not.
+     */
     public BooleanProperty revealPasswordProperty() {
         return ((PasswordFilter) getFilter()).revealPassword;
     }
 
+    /**
+     * See {@link #revealPasswordProperty}.
+     */
     public boolean isRevealPassword() {
         return revealPasswordProperty().get();
     }
 
+    /**
+     * See {@link #revealPasswordProperty}.
+     */
     public void setRevealPassword(boolean reveal) {
         revealPasswordProperty().set(reveal);
     }
 
-    // Life would be easier if TextFormatter had the default constructor.
-    public static PasswordTextFormatter create(TextField textField, char bullet) {
+    /**
+     * Creates a new password text formatter with the provided mask character and
+     * applies itself to the specified text field.
+     */
+    public static PasswordTextFormatter create(TextField field, char bullet) {
         var filter = new PasswordFilter();
         var converter = new PasswordStringConverter(filter);
-        return new PasswordTextFormatter(converter, filter, textField, bullet);
+
+        var formatter = new PasswordTextFormatter(converter, filter, field, bullet);
+        field.setTextFormatter(formatter);
+
+        return formatter;
     }
 
+    /**
+     * Creates a new password text formatter with the default mask character and
+     * applies itself to the specified text field.
+     */
     public static PasswordTextFormatter create(TextField textField) {
         return create(textField, BULLET);
     }
@@ -95,15 +126,17 @@ public class PasswordTextFormatter extends TextFormatter<String> {
 
         @Override
         public String toString(String s) {
-            if (s == null) {
-                return "";
-            }
-            return filter.revealPassword.get() ? filter.password.get() : filter.maskText(s.length());
+            return getPassword();
         }
 
         @Override
-        public String fromString(String string) {
-            return filter.password.get();
+        public String fromString(String s) {
+            return getPassword();
+        }
+
+        protected String getPassword() {
+            var password = filter.password.get();
+            return filter.revealPassword.get() ? password : filter.maskText(password.length());
         }
     }
 
@@ -116,15 +149,6 @@ public class PasswordTextFormatter extends TextFormatter<String> {
 
         @Override
         public TextFormatter.Change apply(TextFormatter.Change change) {
-            // Since we are using setText() to force text field to update (see above),
-            // we should protect internal password value from changing when `revealPassword`is toggled.
-            if (Objects.equals(change.getText(), sb.toString())) {
-                if (!revealPassword.get()) {
-                    change.setText(maskText(change.getText().length()));
-                }
-                return change;
-            }
-
             if (change.isReplaced()) {
                 sb.replace(change.getRangeStart(), change.getRangeEnd(), change.getText());
             } else if (change.isDeleted()) {

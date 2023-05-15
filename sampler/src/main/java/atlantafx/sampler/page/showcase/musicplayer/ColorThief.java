@@ -7,29 +7,45 @@
  * Creative Commons Attribution 2.5 License:
  * http://creativecommons.org/licenses/by/2.5/
  */
-package atlantafx.sampler.page.showcase.musicplayer;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.util.*;
+package atlantafx.sampler.page.showcase.musicplayer;
 
 import static java.awt.image.BufferedImage.TYPE_3BYTE_BGR;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+@SuppressWarnings({"unused", "NarrowingCompoundAssignment"})
 final class ColorThief {
+
+    private ColorThief() {
+        // Default constructor
+    }
 
     private static final int DEFAULT_QUALITY = 10;
     private static final boolean DEFAULT_IGNORE_WHITE = true;
 
     public static int[] getColor(BufferedImage source) {
         int[][] palette = getPalette(source, 5);
-        if (palette == null) { return null; }
+
+        if (palette == null)
+            return null;
+
         return palette[0];
     }
 
     public static int[][] getPalette(BufferedImage source, int colorCount) {
         MMCQ.ColorMap colorMap = getColorMap(source, colorCount);
-        if (colorMap == null) { return null; }
+
+        if (colorMap == null)
+            return null;
+
         return colorMap.palette();
     }
 
@@ -39,12 +55,10 @@ final class ColorThief {
 
     public static MMCQ.ColorMap getColorMap(BufferedImage sourceImage, int colorCount, int quality,
                                             boolean ignoreWhite) {
-        if (colorCount < 2 || colorCount > 256) {
+        if (colorCount < 2 || colorCount > 256)
             throw new IllegalArgumentException("Specified colorCount must be between 2 and 256.");
-        }
-        if (quality < 1) {
+        if (quality < 1)
             throw new IllegalArgumentException("Specified quality should be greater then 0.");
-        }
 
         int[][] pixelArray = switch (sourceImage.getType()) {
             case TYPE_3BYTE_BGR, TYPE_4BYTE_ABGR -> getPixelsFast(sourceImage, quality, ignoreWhite);
@@ -84,7 +98,7 @@ final class ColorThief {
         int offset, r, g, b, a;
 
         switch (type) {
-            case TYPE_3BYTE_BGR:
+            case TYPE_3BYTE_BGR -> {
                 for (int i = 0; i < pixelCount; i += quality) {
                     offset = i * 3;
                     b = pixels[offset] & 0xFF;
@@ -92,13 +106,12 @@ final class ColorThief {
                     r = pixels[offset + 2] & 0xFF;
 
                     if (!(ignoreWhite && r > 250 && g > 250 && b > 250)) {
-                        pixelArray[numUsedPixels] = new int[] { r, g, b };
+                        pixelArray[numUsedPixels] = new int[]{r, g, b};
                         numUsedPixels++;
                     }
                 }
-                break;
-
-            case TYPE_4BYTE_ABGR:
+            }
+            case TYPE_4BYTE_ABGR -> {
                 for (int i = 0; i < pixelCount; i += quality) {
                     offset = i * 4;
                     a = pixels[offset] & 0xFF;
@@ -107,14 +120,12 @@ final class ColorThief {
                     r = pixels[offset + 3] & 0xFF;
 
                     if (a >= 125 && !(ignoreWhite && r > 250 && g > 250 && b > 250)) {
-                        pixelArray[numUsedPixels] = new int[] { r, g, b };
+                        pixelArray[numUsedPixels] = new int[]{r, g, b};
                         numUsedPixels++;
                     }
                 }
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unhandled type: " + type);
+            }
+            default -> throw new IllegalArgumentException("Unhandled type: " + type);
         }
 
         return Arrays.copyOfRange(pixelArray, 0, numUsedPixels);
@@ -141,9 +152,9 @@ final class ColorThief {
 
             r = (rgb >> 16) & 0xFF;
             g = (rgb >> 8) & 0xFF;
-            b = (rgb) & 0xFF;
+            b = rgb & 0xFF;
             if (!(ignoreWhite && r > 250 && g > 250 && b > 250)) {
-                res[numUsedPixels] = new int[] { r, g, b };
+                res[numUsedPixels] = new int[]{r, g, b};
                 numUsedPixels++;
             }
         }
@@ -175,9 +186,9 @@ final class ColorThief {
 
             private final int[] histo;
 
-            private int[] _avg;
-            private Integer _volume;
-            private Integer _count;
+            private int[] gAvg;
+            private Integer gVolume;
+            private Integer gCount;
 
             public VBox(int r1, int r2, int g1, int g2, int b1, int b2, int[] histo) {
                 this.r1 = r1;
@@ -195,14 +206,14 @@ final class ColorThief {
             }
 
             public int volume(boolean force) {
-                if (_volume == null || force) {
-                    _volume = ((r2 - r1 + 1) * (g2 - g1 + 1) * (b2 - b1 + 1));
+                if (gVolume == null || force) {
+                    gVolume = ((r2 - r1 + 1) * (g2 - g1 + 1) * (b2 - b1 + 1));
                 }
-                return _volume;
+                return gVolume;
             }
 
             public int count(boolean force) {
-                if (_count == null || force) {
+                if (gCount == null || force) {
                     int npix = 0;
                     int i, j, k, index;
 
@@ -215,10 +226,10 @@ final class ColorThief {
                         }
                     }
 
-                    _count = npix;
+                    gCount = npix;
                 }
 
-                return _count;
+                return gCount;
             }
 
             @Override
@@ -228,7 +239,7 @@ final class ColorThief {
             }
 
             public int[] avg(boolean force) {
-                if (_avg == null || force) {
+                if (gAvg == null || force) {
                     int ntot = 0;
                     int rsum = 0;
                     int gsum = 0;
@@ -249,13 +260,14 @@ final class ColorThief {
                     }
 
                     if (ntot > 0) {
-                        _avg = new int[] { (rsum / ntot), (gsum / ntot), (bsum / ntot) };
+                        gAvg = new int[]{(rsum / ntot), (gsum / ntot), (bsum / ntot)};
                     } else {
-                        _avg = new int[] { (MULT * (r1 + r2 + 1) / 2), (MULT * (g1 + g2 + 1) / 2), (MULT * (b1 + b2 + 1) / 2) };
+                        gAvg = new int[]{(MULT * (r1 + r2 + 1) / 2), (MULT * (g1 + g2 + 1) / 2),
+                                (MULT * (b1 + b2 + 1) / 2)};
                     }
                 }
 
-                return _avg;
+                return gAvg;
             }
 
             public boolean contains(int[] pixel) {
@@ -268,7 +280,7 @@ final class ColorThief {
 
         public static class ColorMap {
 
-            public final ArrayList<VBox> vboxes = new ArrayList<>();
+            public final List<VBox> vboxes = new ArrayList<>();
 
             public void push(VBox box) {
                 vboxes.add(box);
@@ -305,9 +317,9 @@ final class ColorThief {
                 int numVBoxes = vboxes.size();
                 for (VBox vbox : vboxes) {
                     int[] vbColor = vbox.avg(false);
-                    d2 = Math.sqrt(Math.pow(color[0] - vbColor[0], 2) +
-                                           Math.pow(color[1] - vbColor[1], 2) +
-                                           Math.pow(color[2] - vbColor[2], 2)
+                    d2 = Math.sqrt(Math.pow(color[0] - vbColor[0], 2)
+                            + Math.pow(color[1] - vbColor[1], 2)
+                            + Math.pow(color[2] - vbColor[2], 2)
                     );
                     if (d2 < d1) {
                         d1 = d2;
@@ -375,7 +387,7 @@ final class ColorThief {
             }
 
             if (vbox.count(false) == 1) {
-                return new VBox[] { vbox.clone(), null };
+                return new VBox[]{vbox.clone(), null};
             }
 
             int rw = vbox.r2 - vbox.r1 + 1;
@@ -446,36 +458,36 @@ final class ColorThief {
                 int[] lookAheadSum,
                 int total
         ) {
-            int vbox_dim1;
-            int vbox_dim2;
+            int vboxDim1;
+            int vboxDim2;
 
             if (color == 'r') {
-                vbox_dim1 = vbox.r1;
-                vbox_dim2 = vbox.r2;
+                vboxDim1 = vbox.r1;
+                vboxDim2 = vbox.r2;
             } else if (color == 'g') {
-                vbox_dim1 = vbox.g1;
-                vbox_dim2 = vbox.g2;
+                vboxDim1 = vbox.g1;
+                vboxDim2 = vbox.g2;
             } else {
-                vbox_dim1 = vbox.b1;
-                vbox_dim2 = vbox.b2;
+                vboxDim1 = vbox.b1;
+                vboxDim2 = vbox.b2;
             }
 
             int left, right;
             VBox vbox1, vbox2;
             int d2, count2;
 
-            for (int i = vbox_dim1; i <= vbox_dim2; i++) {
+            for (int i = vboxDim1; i <= vboxDim2; i++) {
                 if (partialSum[i] > total / 2) {
                     vbox1 = vbox.clone();
                     vbox2 = vbox.clone();
 
-                    left = i - vbox_dim1;
-                    right = vbox_dim2 - i;
+                    left = i - vboxDim1;
+                    right = vboxDim2 - i;
 
                     if (left <= right) {
-                        d2 = Math.min(vbox_dim2 - 1, (i + right / 2));
+                        d2 = Math.min(vboxDim2 - 1, (i + right / 2));
                     } else {
-                        d2 = Math.max(vbox_dim1, ((int) (i - 1 - left / 2.0)));
+                        d2 = Math.max(vboxDim1, ((int) (i - 1 - left / 2.0)));
                     }
 
                     while (d2 < 0 || partialSum[d2] <= 0) {
@@ -497,7 +509,7 @@ final class ColorThief {
                         vbox2.b1 = d2 + 1;
                     }
 
-                    return new VBox[] { vbox1, vbox2 };
+                    return new VBox[]{vbox1, vbox2};
                 }
             }
 
@@ -505,7 +517,9 @@ final class ColorThief {
         }
 
         public static ColorMap quantize(int[][] pixels, int maxcolors) {
-            if (pixels.length == 0 || maxcolors < 2 || maxcolors > 256) { return null; }
+            if (pixels.length == 0 || maxcolors < 2 || maxcolors > 256) {
+                return null;
+            }
 
             int[] histo = getHisto(pixels);
 
@@ -563,7 +577,9 @@ final class ColorThief {
                 if (lh.size() >= target) {
                     return;
                 }
-                if (niters++ > MAX_ITERATIONS) { return; }
+                if (niters++ > MAX_ITERATIONS) {
+                    return;
+                }
             }
         }
 
@@ -575,7 +591,9 @@ final class ColorThief {
             int aVolume = a.volume(false);
             int bVolume = b.volume(false);
 
-            if (aCount == bCount) { return aVolume - bVolume; }
+            if (aCount == bCount) {
+                return aVolume - bVolume;
+            }
 
             return Long.compare((long) aCount * aVolume, (long) bCount * bVolume);
         };

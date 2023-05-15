@@ -1,5 +1,8 @@
 /* SPDX-License-Identifier: MIT */
+
 package atlantafx.sampler;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import atlantafx.sampler.event.BrowseEvent;
 import atlantafx.sampler.event.DefaultEventBus;
@@ -11,33 +14,31 @@ import fr.brouillard.oss.cssfx.CSSFX;
 import fr.brouillard.oss.cssfx.api.URIToPathConverter;
 import fr.brouillard.oss.cssfx.impl.log.CSSFXLogger;
 import fr.brouillard.oss.cssfx.impl.log.CSSFXLogger.LogLevel;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import javafx.application.Application;
+import javafx.application.ConditionalFeature;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
 public class Launcher extends Application {
 
     public static final boolean IS_DEV_MODE = "DEV".equalsIgnoreCase(
-            Resources.getPropertyOrEnv("atlantafx.mode", "ATLANTAFX_MODE")
+        Resources.getPropertyOrEnv("atlantafx.mode", "ATLANTAFX_MODE")
     );
 
     public static final List<KeyCodeCombination> SUPPORTED_HOTKEYS = List.of(
-            new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN)
+        new KeyCodeCombination(KeyCode.SLASH)
     );
 
     public static void main(String[] args) {
@@ -54,7 +55,11 @@ public class Launcher extends Application {
         }
 
         var root = new ApplicationWindow();
-        var scene = new Scene(root, 1200, 768);
+
+        var antialiasing = Platform.isSupported(ConditionalFeature.SCENE3D)
+            ? SceneAntialiasing.BALANCED
+            : SceneAntialiasing.DISABLED;
+        var scene = new Scene(root, 1200, 768, false, antialiasing);
         scene.setOnKeyPressed(this::dispatchHotkeys);
 
         var tm = ThemeManager.getInstance();
@@ -92,17 +97,19 @@ public class Launcher extends Application {
 
     private void loadApplicationProperties() {
         Properties properties = new Properties();
-        try (InputStreamReader in = new InputStreamReader(Resources.getResourceAsStream("application.properties"), UTF_8)) {
+        try (InputStreamReader in = new InputStreamReader(Resources.getResourceAsStream("application.properties"),
+            UTF_8)) {
             properties.load(in);
             properties.forEach((key, value) -> System.setProperty(
-                    String.valueOf(key),
-                    String.valueOf(value)
+                String.valueOf(key),
+                String.valueOf(value)
             ));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @SuppressWarnings("CatchAndPrintStackTrace")
     private void startCssFX(Scene scene) {
         URIToPathConverter fileUrlConverter = uri -> {
             try {

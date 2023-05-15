@@ -1,9 +1,15 @@
 /* SPDX-License-Identifier: MIT */
+
 package atlantafx.base.theme;
 
 import javafx.css.PseudoClass;
 import javafx.scene.Node;
+import javafx.scene.control.TabPane;
 
+/**
+ * A set of constants and utility methods that simplifies adding
+ * CSS classes programmatically.
+ */
 @SuppressWarnings("unused")
 public final class Styles {
 
@@ -53,6 +59,9 @@ public final class Styles {
     public static final String ROUNDED = "rounded";
     public static final String STRIPED = "striped";
 
+    public static final String TABS_CLASSIC = "classic";
+    public static final String TABS_FLOATING = TabPane.STYLE_CLASS_FLOATING;
+
     // Text
 
     public static final String TITLE_1 = "title-1";
@@ -75,18 +84,21 @@ public final class Styles {
     public static final String TEXT_MUTED = "text-muted";
     public static final String TEXT_SUBTLE = "text-subtle";
 
-    /**
-     * Initialize a new Styles
-     */
     private Styles() {
         // Default constructor
     }
 
+    /**
+     * Adds given style class to the node if it's not present, otherwise
+     * removes it.
+     */
     public static void toggleStyleClass(Node node, String styleClass) {
-        if (node == null)
+        if (node == null) {
             throw new NullPointerException("Node cannot be null!");
-        if (styleClass == null)
+        }
+        if (styleClass == null) {
             throw new NullPointerException("Style class cannot be null!");
+        }
 
         int idx = node.getStyleClass().indexOf(styleClass);
         if (idx > 0) {
@@ -96,11 +108,18 @@ public final class Styles {
         }
     }
 
+    /**
+     * Adds given style class to the node and removes the excluded classes.
+     * This method is supposed to be used when only one from a set of classes
+     * have to be present at once.
+     */
     public static void addStyleClass(Node node, String styleClass, String... excludes) {
-        if (node == null)
+        if (node == null) {
             throw new NullPointerException("Node cannot be null!");
-        if (styleClass == null)
+        }
+        if (styleClass == null) {
             throw new NullPointerException("Style class cannot be null!");
+        }
 
         if (excludes != null && excludes.length > 0) {
             node.getStyleClass().removeAll(excludes);
@@ -108,13 +127,20 @@ public final class Styles {
         node.getStyleClass().add(styleClass);
     }
 
+    /**
+     * Activates given pseudo-class to the node and deactivates the excluded pseudo-classes.
+     * This method is supposed to be used when only one from a set of pseudo-classes
+     * have to be present at once.
+     */
     public static void activatePseudoClass(Node node, PseudoClass pseudoClass, PseudoClass... excludes) {
-        if (node == null)
+        if (node == null) {
             throw new NullPointerException("Node cannot be null!");
-        if (pseudoClass == null)
+        }
+        if (pseudoClass == null) {
             throw new NullPointerException("PseudoClass cannot be null!");
+        }
 
-        if (excludes != null && excludes.length > 0) {
+        if (excludes != null) {
             for (PseudoClass exclude : excludes) {
                 node.pseudoClassStateChanged(exclude, false);
             }

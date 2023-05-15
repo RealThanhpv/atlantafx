@@ -1,18 +1,33 @@
 /* SPDX-License-Identifier: MIT */
+
 package atlantafx.sampler.page.general;
 
+import static atlantafx.sampler.event.ThemeEvent.EventType.COLOR_CHANGE;
+import static atlantafx.sampler.event.ThemeEvent.EventType.THEME_ADD;
+import static atlantafx.sampler.event.ThemeEvent.EventType.THEME_CHANGE;
+import static atlantafx.sampler.event.ThemeEvent.EventType.THEME_REMOVE;
+import static atlantafx.sampler.page.SampleBlock.BLOCK_HGAP;
+import static atlantafx.sampler.page.SampleBlock.BLOCK_VGAP;
+import static atlantafx.sampler.util.Controls.hyperlink;
+
 import atlantafx.base.theme.Styles;
+import atlantafx.sampler.Resources;
 import atlantafx.sampler.event.DefaultEventBus;
 import atlantafx.sampler.event.ThemeEvent;
 import atlantafx.sampler.page.AbstractPage;
 import atlantafx.sampler.page.Page;
 import atlantafx.sampler.theme.SamplerTheme;
 import atlantafx.sampler.theme.ThemeManager;
+import java.net.URI;
+import java.util.Objects;
+import java.util.function.Consumer;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -22,27 +37,23 @@ import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
-import java.net.URI;
-import java.util.Objects;
-import java.util.function.Consumer;
-
-import static atlantafx.sampler.event.ThemeEvent.EventType.*;
-import static atlantafx.sampler.page.SampleBlock.BLOCK_HGAP;
-import static atlantafx.sampler.page.SampleBlock.BLOCK_VGAP;
-import static atlantafx.sampler.util.Controls.hyperlink;
-
+@SuppressWarnings("UnnecessaryLambda")
 public class ThemePage extends AbstractPage {
 
     public static final String NAME = "Theme";
+
     private static final ThemeManager TM = ThemeManager.getInstance();
+    private static final Image SCENE_BUILDER_ICON = new Image(
+        Resources.getResourceAsStream("images/scene-builder_32.png")
+    );
 
     private final Consumer<ColorPaletteBlock> colorBlockActionHandler = colorBlock -> {
         ContrastCheckerDialog dialog = getOrCreateContrastCheckerDialog();
         dialog.getContent().setValues(
-                colorBlock.getFgColorName(),
-                colorBlock.getFgColor(),
-                colorBlock.getBgColorName(),
-                colorBlock.getBgColor()
+            colorBlock.getFgColorName(),
+            colorBlock.getFgColor(),
+            colorBlock.getBgColorName(),
+            colorBlock.getBgColor()
         );
         overlay.setContent(dialog, HPos.CENTER);
         overlay.toFront();
@@ -54,15 +65,22 @@ public class ThemePage extends AbstractPage {
 
     private ThemeRepoManagerDialog themeRepoManagerDialog;
     private ContrastCheckerDialog contrastCheckerDialog;
+    private SceneBuilderDialog sceneBuilderDialog;
 
     @Override
-    public String getName() { return NAME; }
+    public String getName() {
+        return NAME;
+    }
 
     @Override
-    public boolean canDisplaySourceCode() { return false; }
+    public boolean canDisplaySourceCode() {
+        return false;
+    }
 
     @Override
-    public boolean canChangeThemeSettings() { return false; }
+    public boolean canChangeThemeSettings() {
+        return false;
+    }
 
     public ThemePage() {
         super();
@@ -90,17 +108,18 @@ public class ThemePage extends AbstractPage {
 
     private void createView() {
         var noteText = new TextFlow(
-                new Text("AtlantaFX follows "),
-                hyperlink("Github Primer interface guidelines", URI.create("https://primer.style/design/foundations/color")),
-                new Text(" and color system.")
+            new Text("AtlantaFX follows "),
+            hyperlink("Github Primer interface guidelines",
+                URI.create("https://primer.style/design/foundations/color")),
+            new Text(" and color system.")
         );
 
         setUserContent(new VBox(
-                Page.PAGE_VGAP,
-                createOptionsGrid(),
-                noteText,
-                colorPalette,
-                colorScale
+            Page.PAGE_VGAP,
+            createOptionsGrid(),
+            noteText,
+            colorPalette,
+            colorScale
         ));
 
         selectCurrentTheme();
@@ -119,6 +138,14 @@ public class ThemePage extends AbstractPage {
 
         var accentSelector = new AccentColorSelector();
 
+        var sceneBuilderBtn = new Button("SceneBuilder Integration");
+        sceneBuilderBtn.setGraphic(new ImageView(SCENE_BUILDER_ICON));
+        sceneBuilderBtn.setOnAction(e -> {
+            SceneBuilderDialog dialog = getOrCreateScneBuilderDialog();
+            overlay.setContent(dialog, HPos.CENTER);
+            overlay.toFront();
+        });
+
         // ~
 
         var grid = new GridPane();
@@ -130,6 +157,7 @@ public class ThemePage extends AbstractPage {
         grid.add(themeRepoBtn, 2, 0);
         grid.add(new Label("Accent color"), 0, 1);
         grid.add(accentSelector, 1, 1);
+        grid.add(sceneBuilderBtn, 0, 2, GridPane.REMAINING, 1);
 
         return grid;
     }
@@ -138,7 +166,9 @@ public class ThemePage extends AbstractPage {
         var selector = new ChoiceBox<SamplerTheme>();
         selector.getItems().setAll(TM.getRepository().getAll());
         selector.getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
-            if (val != null && getScene() != null) { TM.setTheme(val); }
+            if (val != null && getScene() != null) {
+                TM.setTheme(val);
+            }
         });
         selector.setPrefWidth(250);
 
@@ -151,9 +181,9 @@ public class ThemePage extends AbstractPage {
             @Override
             public SamplerTheme fromString(String themeName) {
                 return TM.getRepository().getAll().stream()
-                        .filter(t -> Objects.equals(themeName, t.getName()))
-                        .findFirst()
-                        .orElse(null);
+                    .filter(t -> Objects.equals(themeName, t.getName()))
+                    .findFirst()
+                    .orElse(null);
             }
         });
 
@@ -161,11 +191,13 @@ public class ThemePage extends AbstractPage {
     }
 
     private void selectCurrentTheme() {
-        if (TM.getTheme() == null) { return; }
+        if (TM.getTheme() == null) {
+            return;
+        }
         themeSelector.getItems().stream()
-                .filter(t -> Objects.equals(TM.getTheme().getName(), t.getName()))
-                .findFirst()
-                .ifPresent(t -> themeSelector.getSelectionModel().select(t));
+            .filter(t -> Objects.equals(TM.getTheme().getName(), t.getName()))
+            .findFirst()
+            .ifPresent(t -> themeSelector.getSelectionModel().select(t));
     }
 
     private ThemeRepoManagerDialog getOrCreateThemeRepoManagerDialog() {
@@ -192,5 +224,19 @@ public class ThemePage extends AbstractPage {
         });
 
         return contrastCheckerDialog;
+    }
+
+    private SceneBuilderDialog getOrCreateScneBuilderDialog() {
+        if (sceneBuilderDialog == null) {
+            sceneBuilderDialog = new SceneBuilderDialog();
+        }
+
+        sceneBuilderDialog.setOnCloseRequest(() -> {
+            overlay.removeContent();
+            overlay.toBack();
+            sceneBuilderDialog.reset();
+        });
+
+        return sceneBuilderDialog;
     }
 }
