@@ -1,0 +1,47 @@
+
+$padding-x:       6px;
+$padding-y:       6px  ;
+$graphic-gap:     4px  ;
+
+// Most components use background insets to draw its borders due to
+// performance reasons.
+$border-width:   1px ;
+$border-radius:  4px ;
+
+$opacity-disabled: 0.4;
+
+// javafx-controls doesn't have iconic fonts support,
+// this is just a variable that is used across the theme to style font icons
+$font-icon-selector: ".font-icon, .ikonli-font-icon";
+$font-icon-selector-immediate: ">.font-icon, >.ikonli-font-icon";
+
+// Ikonli doesn't support 'em'
+$icon-size: 16px ;
+
+// elevation (level : radius)
+$elevation: (1: 2px, 2: 8px, 3: 16px, 4: 20px) !default;
+$elevation-color:       -color-shadow-default  !default;
+$elevation-interactive: map-get($elevation, 2) !default;
+
+// check box, radio button
+$checkbox-mark-size:   0.75em !default;
+$checkbox-mark-padding-y: 3px !default;
+$checkbox-mark-padding-x: 4px !default;
+$checkbox-label-padding:  2px !default;
+
+// menu
+$popup-padding-x:     2px !default;
+$popup-padding-y:     2px !default;
+$popup-shadow-radius: if($darkMode, 8px, 6px) !default;
+$popup-shadow-spread: if($darkMode, 0.6, 0.3) !default;
+$menu-padding-x:      $padding-x !default;
+$menu-padding-y:      $padding-y !default;
+
+// separators
+$separators: ("small": 0.25em, "medium": 0.75em, "large": 1.5em) !default;
+
+// scroll bars
+$scrollbar-color-track: -color-border-subtle !default;
+$scrollbar-color-thumb: -color-fg-muted !default;
+$scrollbar-opacity-inactive: 0.5 !default;
+$scrollbar-opacity-disabled: 0.25 !default;
