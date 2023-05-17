@@ -158,9 +158,21 @@ $ui-yellowLight:     hsla(60, 100%, 75%, 5%);
   $danger-subtle:        color.change(scale.$danger-5, $alpha: 0.1)
 );
 
+//@forward "settings/config" with (
+//  $darkMode:      true,
+//  $border-radius: 6px,
+//  $checkbox-mark-size: 0.85em,
+//  $scrollbar-color-thumb: -color-accent-4
+//);
+
+//BlueGrid
+@use "settings/size-bluegrid" as blg;
 @forward "settings/config" with (
   $darkMode:      true,
-  $border-radius: 6px,
+  $padding-x:     blg.$padding-x,
+  $padding-y:     blg.$padding-y,
+  $border-radius: blg.$border-radius,
+  $graphic-gap:   blg.$graphic-gap,
   $checkbox-mark-size: 0.85em,
   $scrollbar-color-thumb: -color-accent-4
 );

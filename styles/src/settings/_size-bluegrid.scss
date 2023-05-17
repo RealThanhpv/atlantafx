@@ -1,4 +1,4 @@
-
+@use "sass:math";
 $padding-x:       6px;
 $padding-y:       6px  ;
 $graphic-gap:     4px  ;
@@ -32,8 +32,8 @@ $checkbox-label-padding:  2px !default;
 // menu
 $popup-padding-x:     2px !default;
 $popup-padding-y:     2px !default;
-$popup-shadow-radius: if($darkMode, 8px, 6px) !default;
-$popup-shadow-spread: if($darkMode, 0.6, 0.3) !default;
+//$popup-shadow-radius: if($darkMode, 8px, 6px) !default;
+//$popup-shadow-spread: if($darkMode, 0.6, 0.3) !default;
 $menu-padding-x:      $padding-x !default;
 $menu-padding-y:      $padding-y !default;
 

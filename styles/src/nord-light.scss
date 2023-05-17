@@ -130,11 +130,22 @@ $nord16: #B48EAD; // hsl(311, 20.2, 63.1)
   $danger-subtle:        utils.flattenColor(scale.$light, color.change(scale.$danger-4, $alpha: 0.15))
 );
 
+//@forward "settings/config" with (
+//  $darkMode:         false,
+//  $border-radius:    1,
+//  $opacity-disabled: 0.6,
+//  $popup-radius:     0
+//);
+
+//BlueGrid
+@use "settings/size-bluegrid" as blg;
 @forward "settings/config" with (
-  $darkMode:         false,
-  $border-radius:    1,
-  $opacity-disabled: 0.6,
-  $popup-radius:     0
+  $darkMode:      false,
+  $padding-x:     blg.$padding-x,
+  $padding-y:     blg.$padding-y,
+  $border-radius: blg.$border-radius,
+  $graphic-gap:   blg.$graphic-gap,
+   $checkbox-mark-size: 0.85em
 );
 
 @use "general";

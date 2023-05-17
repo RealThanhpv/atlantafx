@@ -109,8 +109,19 @@
   $danger-subtle:        color.change(scale.$danger-4, $alpha: 0.15)
 );
 
+//@forward "settings/config" with (
+//  $darkMode: true
+//);
+
+//BlueGrid
+@use "settings/size-bluegrid" as blg;
 @forward "settings/config" with (
-  $darkMode: true
+  $darkMode:      true,
+  $padding-x:     blg.$padding-x,
+  $padding-y:     blg.$padding-y,
+  $border-radius: blg.$border-radius,
+  $graphic-gap:   blg.$graphic-gap,
+   $checkbox-mark-size: 0.85em
 );
 
 @use "general";
