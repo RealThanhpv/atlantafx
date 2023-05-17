@@ -166,7 +166,7 @@ $ui-yellowLight:     hsla(60, 100%, 75%, 5%);
 //);
 
 //BlueGrid
-@use "settings/size-bluegrid" as blg;
+@use "bluegrid/size-bluegrid" as blg;
 @forward "settings/config" with (
   $darkMode:      true,
   $padding-x:     blg.$padding-x,

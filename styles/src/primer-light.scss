@@ -19,7 +19,7 @@
 // This should precede components customization, as it guarantees
 // that .root styles will precede components styles.
 //BlueGrid
-@use "settings/size-bluegrid" as blg;
+@use "bluegrid/size-bluegrid" as blg;
 @forward "settings/config" with (
 
   $padding-x:     blg.$padding-x,
