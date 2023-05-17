@@ -157,16 +157,8 @@ $opaqueSeparator: rgba(56.0, 56.0, 58.0, 1.0);     // #38383aff
 //);
 
 //BlueGrid
-@use "bluegrid/size-bluegrid" as blg;
-@forward "settings/config" with (
-  $darkMode:      true,
-  $padding-x:     blg.$padding-x,
-  $padding-y:     blg.$padding-y,
-  $border-radius: blg.$border-radius,
-  $graphic-gap:   blg.$graphic-gap,
-  $icon-size:     blg.$icon-size,
-  $checkbox-mark-size: 0.85em
-);
+@use'bluegrid/bluegrid_forward' with ($darkMode:true);
+
 
 @use "general";
 

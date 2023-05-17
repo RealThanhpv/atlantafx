@@ -1,4 +1,5 @@
 @use "sass:math";
+$darkMode: false !default;
 $padding-x:       6px;
 $padding-y:       6px  ;
 $graphic-gap:     4px  ;
@@ -9,6 +10,7 @@ $border-width:   1px ;
 $border-radius:  4px ;
 
 $opacity-disabled: 0.4;
+
 
 // javafx-controls doesn't have iconic fonts support,
 // this is just a variable that is used across the theme to style font icons
@@ -46,6 +48,3 @@ $scrollbar-color-thumb: -color-fg-muted !default;
 $scrollbar-opacity-inactive: 0.5 !default;
 $scrollbar-opacity-disabled: 0.25 !default;
 
-//@mixin blg_forward {
-//
-//}

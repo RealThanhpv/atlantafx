@@ -135,15 +135,7 @@ $nord16: #B48EAD; // hsl(311, 20.2, 63.1)
 //);
 
 //BlueGrid
-@use "bluegrid/size-bluegrid" as blg;
-@forward "settings/config" with (
-  $darkMode:      true,
-  $padding-x:     blg.$padding-x,
-  $padding-y:     blg.$padding-y,
-  $border-radius: blg.$border-radius,
-  $graphic-gap:   blg.$graphic-gap,
-   $checkbox-mark-size: 0.85em
-);
+@use'bluegrid/bluegrid_forward' with ($darkMode: true);
 
 @use "general";
 

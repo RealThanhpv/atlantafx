@@ -1,0 +1,11 @@
+
+@use "size-bluegrid" as blg;
+@forward "../settings/config" with (
+  $darkMode:      false !default,
+  $padding-x:     blg.$padding-x,
+  $padding-y:     blg.$padding-y,
+  $border-radius: blg.$border-radius,
+  $graphic-gap:   blg.$graphic-gap,
+  $icon-size:     blg.$icon-size,
+  $checkbox-mark-size: 0.85em
+);
