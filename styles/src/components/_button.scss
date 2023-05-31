@@ -157,25 +157,19 @@ $color-shadow: -color-shadow-default !default;
   }
 
   // Button calculates its height based on the internal text font size.
-  // So, button that has no text (or icon) will appear lower than regulat
+  // So, button that has no text (or icon) will appear lower than regular
   // buttons. There're no workarounds, but you can set escape char like
   // \s or \f as button text.
   &.button-icon {
     -fx-padding: cfg.$padding-y;
-
-    >.text {
-      visibility: hidden;
-    }
+    -fx-content-display: graphic-only;
   }
 
   &.button-circle {
     -fx-background-radius: 50;
     -fx-padding: 6px 8px 6px 8px;
+    -fx-content-display: graphic-only;
     -fx-effect:  none;
-
-    >.text {
-      visibility: hidden;
-    }
   }
 
   // toggle button + input group
@@ -365,6 +359,13 @@ $color-shadow: -color-shadow-default !default;
       -fx-icon-color: -color-button-fg-pressed;
       -fx-fill: -color-button-fg-pressed;
     }
+  }
+
+  &.button-outlined {
+    -color-button-bg:       -color-bg-default;
+    -color-button-fg:       $color-fg;
+    -color-button-bg-hover: $color-bg-hover;
+    -color-button-fg-hover: $color-fg-hover;
   }
 
   &:default,

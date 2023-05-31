@@ -2,12 +2,9 @@
 
 package atlantafx.base.theme;
 
-import atlantafx.base.Preview;
-
 /**
  * A theme based on <a href="https://developer.apple.com/design/">IOS</a> color palette.
  */
-@Preview
 public class CupertinoDark implements Theme {
 
     public CupertinoDark() {
@@ -28,6 +25,14 @@ public class CupertinoDark implements Theme {
     @Override
     public String getUserAgentStylesheet() {
         return "/atlantafx/base/theme/cupertino-dark.css";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getUserAgentStylesheetBSS() {
+        return "/atlantafx/base/theme/cupertino-dark.bss";
     }
 
     /**
