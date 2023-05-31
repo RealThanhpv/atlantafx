@@ -55,12 +55,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-
-        <java.version>17</java.version>
-        <openjfx.version>19</openjfx.version>
+        <openjfx.version>20</openjfx.version>
         <sass.version>1.54.4</sass.version>
 
         <app.name>AtlantaFX</app.name>
