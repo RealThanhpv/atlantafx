@@ -6,6 +6,7 @@ import atlantafx.base.util.Animations;
 import java.util.Objects;
 import java.util.function.Function;
 import javafx.animation.Animation;
+import javafx.beans.NamedArg;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -52,7 +53,7 @@ public class ModalPane extends Control {
      * @param topViewOrder the {@link #viewOrderProperty()} value to be set
      *                     to display the modal pane on top of the parent container.
      */
-    public ModalPane(int topViewOrder) {
+    public ModalPane(@NamedArg("topViewOrder") int topViewOrder) {
         super();
         this.topViewOrder = topViewOrder;
     }
@@ -70,7 +71,7 @@ public class ModalPane extends Control {
     // Properties                                                            //
     ///////////////////////////////////////////////////////////////////////////
 
-    protected ObjectProperty<Node> content = new SimpleObjectProperty<>(this, "content", null);
+    protected final ObjectProperty<Node> content = new SimpleObjectProperty<>(this, "content", null);
 
     public Node getContent() {
         return content.get();
@@ -89,7 +90,7 @@ public class ModalPane extends Control {
 
     // ~
 
-    protected BooleanProperty display = new SimpleBooleanProperty(this, "display", false);
+    protected final BooleanProperty display = new SimpleBooleanProperty(this, "display", false);
 
     public boolean isDisplay() {
         return display.get();
@@ -109,7 +110,7 @@ public class ModalPane extends Control {
 
     // ~
 
-    protected ObjectProperty<Pos> alignment = new SimpleObjectProperty<>(this, "alignment", Pos.CENTER);
+    protected final ObjectProperty<Pos> alignment = new SimpleObjectProperty<>(this, "alignment", Pos.CENTER);
 
     public Pos getAlignment() {
         return alignment.get();
@@ -128,7 +129,7 @@ public class ModalPane extends Control {
 
     // ~
 
-    protected ObjectProperty<Function<Node, Animation>> inTransitionFactory = new SimpleObjectProperty<>(
+    protected final ObjectProperty<Function<Node, Animation>> inTransitionFactory = new SimpleObjectProperty<>(
         this, "inTransitionFactory", node -> Animations.zoomIn(node, DEFAULT_DURATION_IN)
     );
 
@@ -150,7 +151,7 @@ public class ModalPane extends Control {
 
     // ~
 
-    protected ObjectProperty<Function<Node, Animation>> outTransitionFactory = new SimpleObjectProperty<>(
+    protected final ObjectProperty<Function<Node, Animation>> outTransitionFactory = new SimpleObjectProperty<>(
         this, "outTransitionFactory", node -> Animations.zoomOut(node, DEFAULT_DURATION_OUT)
     );
 
@@ -172,7 +173,7 @@ public class ModalPane extends Control {
 
     // ~
 
-    protected BooleanProperty persistent = new SimpleBooleanProperty(this, "persistent", false);
+    protected final BooleanProperty persistent = new SimpleBooleanProperty(this, "persistent", false);
 
     public boolean getPersistent() {
         return persistent.get();
@@ -184,8 +185,9 @@ public class ModalPane extends Control {
 
     /**
      * Specifies whether content should be treated as persistent or not.
-     * By default, modal pane exits when on ESC button or mouse click outside the contenbt are.
-     * This property prevents this behavior and plays bouncing animation instead.
+     * By default, the modal pane exits when the ESC button is pressed or when
+     * the mouse is clicked outside the content area. This property prevents
+     * this behavior and plays bouncing animation instead.
      */
     public BooleanProperty persistentProperty() {
         return persistent;
@@ -245,7 +247,7 @@ public class ModalPane extends Control {
             switch (side) {
                 case TOP -> {
                     setInTransitionFactory(node -> Animations.slideInDown(node, durIn));
-                    setOutTransitionFactory(node -> Animations.slideOutDown(node, durOut));
+                    setOutTransitionFactory(node -> Animations.slideOutUp(node, durOut));
                 }
                 case RIGHT -> {
                     setInTransitionFactory(node -> Animations.slideInRight(node, durIn));
@@ -253,7 +255,7 @@ public class ModalPane extends Control {
                 }
                 case BOTTOM -> {
                     setInTransitionFactory(node -> Animations.slideInUp(node, durIn));
-                    setOutTransitionFactory(node -> Animations.slideOutUp(node, durOut));
+                    setOutTransitionFactory(node -> Animations.slideOutDown(node, durOut));
                 }
                 case LEFT -> {
                     setInTransitionFactory(node -> Animations.slideInLeft(node, durIn));

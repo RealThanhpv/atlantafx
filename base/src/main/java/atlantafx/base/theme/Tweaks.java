@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: MIT */
+
 package atlantafx.base.theme;
 
 /**
@@ -20,6 +22,11 @@ public final class Tweaks {
      * Removes external control borders.
      */
     public static final String EDGE_TO_EDGE = "edge-to-edge";
+
+    /**
+     * Removes control header.
+     */
+    public static final String NO_HEADER = "no-header";
 
     /**
      * Alignment.

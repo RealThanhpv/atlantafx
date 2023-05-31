@@ -3,7 +3,9 @@
 package atlantafx.sampler.layout;
 
 import atlantafx.base.controls.Spacer;
+import atlantafx.base.theme.Tweaks;
 import atlantafx.sampler.page.Page;
+import atlantafx.sampler.util.NodeUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +22,7 @@ import javafx.scene.layout.HBox;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class NavTree extends TreeView<Nav> {
+public final class NavTree extends TreeView<Nav> {
 
     public NavTree(MainModel model) {
         super();
@@ -35,6 +37,7 @@ public class NavTree extends TreeView<Nav> {
             }
         });
 
+        getStyleClass().addAll(Tweaks.EDGE_TO_EDGE);
         setShowRoot(false);
         rootProperty().bind(model.navTreeProperty());
         setCellFactory(p -> new NavTreeCell());
@@ -49,6 +52,7 @@ public class NavTree extends TreeView<Nav> {
         private final HBox root;
         private final Label titleLabel;
         private final Node arrowIcon;
+        private final Label tagLabel;
 
         public NavTreeCell() {
             super();
@@ -60,12 +64,15 @@ public class NavTree extends TreeView<Nav> {
             arrowIcon = new FontIcon();
             arrowIcon.getStyleClass().add("arrow");
 
+            tagLabel = new Label("new");
+            tagLabel.getStyleClass().add("tag");
+
             root = new HBox();
             root.setAlignment(Pos.CENTER_LEFT);
-            root.getChildren().setAll(titleLabel, new Spacer(), arrowIcon);
+            root.getChildren().setAll(titleLabel, new Spacer(), arrowIcon, tagLabel);
             root.setCursor(Cursor.HAND);
             root.getStyleClass().add("container");
-            root.setMaxWidth(MainLayer.SIDEBAR_WIDTH - 10);
+            root.setMaxWidth(ApplicationWindow.SIDEBAR_WIDTH - 10);
 
             root.setOnMouseClicked(e -> {
                 if (!(getTreeItem() instanceof Item item)) {
@@ -97,7 +104,8 @@ public class NavTree extends TreeView<Nav> {
                 titleLabel.setGraphic(nav.graphic());
 
                 pseudoClassStateChanged(GROUP, nav.isGroup());
-                arrowIcon.setVisible(nav.isGroup());
+                NodeUtils.toggleVisibility(arrowIcon, nav.isGroup());
+                NodeUtils.toggleVisibility(tagLabel, nav.isTagged());
             }
         }
     }
