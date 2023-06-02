@@ -6,8 +6,8 @@
     <parent>
         <groupId>io.github.mkpaz</groupId>
         <artifactId>atlantafx-parent</artifactId>
+        <version>2.0.0</version>
 
-        <version>1.2.0</version>
     </parent>
     <artifactId>atlantafx-styles</artifactId>
 
@@ -84,7 +84,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${app.name}-${app.version}-scenebuilder</finalName>
+                            <finalName>${app.name}-${app.version}-scenebuilder-themes</finalName>
                             <descriptors>
                                 <descriptor>scenebuilder.xml</descriptor>
                             </descriptors>
