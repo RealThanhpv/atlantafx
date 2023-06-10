@@ -7,7 +7,6 @@
     <groupId>io.github.mkpaz</groupId>
     <artifactId>atlantafx-parent</artifactId>
     <packaging>pom</packaging>
-
     <version>2.0.0</version>
 
 
