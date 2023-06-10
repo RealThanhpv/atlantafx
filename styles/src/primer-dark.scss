@@ -114,7 +114,7 @@
 //);
 
 //BlueGrid
-@use'bluegrid/bluegrid_forward';
+@use'bluegrid/bluegrid_forward' with ($darkMode: true);
 
 @use "general";
 @use "components";
