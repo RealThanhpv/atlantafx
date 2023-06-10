@@ -1,7 +1,7 @@
 @use "sass:math";
 $darkMode: false !default;
-$padding-x:       6px;
-$padding-y:       4px  ;
+$padding-x:       3px;
+$padding-y:       2px  ;
 $graphic-gap:     4px  ;
 
 // Most components use background insets to draw its borders due to
@@ -18,7 +18,7 @@ $font-icon-selector: ".font-icon, .ikonli-font-icon";
 $font-icon-selector-immediate: ">.font-icon, >.ikonli-font-icon";
 
 // Ikonli doesn't support 'em'
-$icon-size: 16px ;
+$icon-size: 14px ;
 
 // elevation (level : radius)
 $elevation: (1: 2px, 2: 8px, 3: 16px, 4: 20px) !default;
