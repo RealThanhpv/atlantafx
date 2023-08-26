@@ -36,7 +36,6 @@ public final class Styles {
     public static final String BUTTON_OUTLINED = "button-outlined";
 
     public static final String LEFT_PILL = "left-pill";
-    public static final String CENTER_PILL = "center-pill";
     public static final String RIGHT_PILL = "right-pill";
 
     public static final String SMALL = "small";
