@@ -52,7 +52,7 @@ public class InputGroup extends HBox {
             Node n = getChildren().get(i);
 
             n.getStyleClass().removeAll(
-                Styles.LEFT_PILL, Styles.CENTER_PILL, Styles.RIGHT_PILL
+                Styles.LEFT_PILL,  Styles.RIGHT_PILL
             );
 
             if (i == getChildren().size() - 1) {
@@ -62,7 +62,7 @@ public class InputGroup extends HBox {
             } else if (i == 0) {
                 n.getStyleClass().add(Styles.LEFT_PILL);
             } else {
-                n.getStyleClass().add(Styles.CENTER_PILL);
+//                n.getStyleClass().add(Styles.CENTER);
             }
         }
     }
