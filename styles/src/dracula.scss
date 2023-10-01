@@ -54,7 +54,7 @@ $ui-yellowLight:     hsla(60, 100%, 75%, 5%);
 
 @forward "settings/color-scale" with (
 
-  $dark:      #0d0e12,
+  $dark:       $foreground, //#0d0e12,
   $light:     $foreground, // $ui-white
 
   $base-0:    #d4d4d7,
